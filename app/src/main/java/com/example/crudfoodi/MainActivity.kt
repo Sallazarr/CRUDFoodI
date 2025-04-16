@@ -1,19 +1,35 @@
 package com.example.crudfoodi
+
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.background // <--- Este aqui é o que falta!
+
+import androidx.compose.ui.graphics.Brush
+
+import androidx.compose.material3.TextField
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.crudfoodi.ui.theme.CRUDFoodITheme
+
+//Import para SQLite
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -22,7 +38,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,21 +60,34 @@ fun LoginScreen() {
  Box(
   modifier = Modifier
    .fillMaxSize()
-   .background(Color(0xFF121212)) // Cor de fundo da tela (Dark Mode)
+   .background(
+    brush = Brush.verticalGradient(
+     colors = listOf(Color.White, Color(0xFF007bff))
+    )
+   )
    .padding(24.dp),
-  contentAlignment = Alignment.Center // Centraliza tudo dentro da Box
+  contentAlignment = Alignment.Center
  ) {
   Column(
    horizontalAlignment = Alignment.CenterHorizontally, // Centraliza os itens horizontalmente
   ) {
+   Image(
+    painter = painterResource(id = R.drawable.logobgless),
+    contentDescription = "Logo FoodI",
+    modifier = Modifier
+     .height(250.dp) // Ajuste o tamanho como quiser
+     .width(250.dp)
+     .padding(bottom = 12.dp)
+   )
    Text(
     text = "Bem-vindo à FoodI!",
     style = TextStyle(
      fontSize = 24.sp,
      fontWeight = FontWeight.Bold
     ),
-    color = Color.White // Cor do texto
+    color = Color.Black
    )
+
 
    Spacer(modifier = Modifier.height(40.dp))
 
@@ -65,17 +95,23 @@ fun LoginScreen() {
    TextField(
     value = "",
     onValueChange = {},
-    label = { Text("Email", color = Color.LightGray) },
+    label = { Text("Email") },
     modifier = Modifier
      .fillMaxWidth()
-     .clip(RoundedCornerShape(10.dp)), // Bordas arredondadas
-    colors = TextFieldDefaults.textFieldColors(
-     containerColor = Color(0xFF1F1F1F), // Fundo do input
+     .clip(RoundedCornerShape(10.dp)),
+    colors = TextFieldDefaults.colors(
+     focusedContainerColor = Color.White,
+     unfocusedContainerColor = Color.White,
      focusedIndicatorColor = Color(0xFF007bff),
-     unfocusedIndicatorColor = Color.Gray,
-     textColor = Color.White
-    )
+     unfocusedIndicatorColor = Color.LightGray,
+     focusedLabelColor = Color(0xFF007bff),
+     unfocusedLabelColor = Color.Gray,
+     cursorColor = Color(0xFF007bff)
+    ),
+    textStyle = TextStyle(color = Color.Black)
    )
+
+
 
    Spacer(modifier = Modifier.height(16.dp))
 
@@ -83,17 +119,22 @@ fun LoginScreen() {
    TextField(
     value = "",
     onValueChange = {},
-    label = { Text("Senha", color = Color.LightGray) },
+    label = { Text("Senha") },
     modifier = Modifier
      .fillMaxWidth()
      .clip(RoundedCornerShape(10.dp)),
-    colors = TextFieldDefaults.textFieldColors(
-     containerColor = Color(0xFF1F1F1F),
+    colors = TextFieldDefaults.colors(
+     focusedContainerColor = Color.White,
+     unfocusedContainerColor = Color.White,
      focusedIndicatorColor = Color(0xFF007bff),
-     unfocusedIndicatorColor = Color.Gray,
-     textColor = Color.White
-    )
+     unfocusedIndicatorColor = Color.LightGray,
+     focusedLabelColor = Color(0xFF007bff),
+     unfocusedLabelColor = Color.Gray,
+     cursorColor = Color(0xFF007bff)
+    ),
+    textStyle = TextStyle(color = Color.Black)
    )
+
 
    Spacer(modifier = Modifier.height(24.dp))
 
@@ -116,7 +157,7 @@ fun LoginScreen() {
    // Texto de registrar
    Text(
     text = "Registrar-se",
-    color = Color(0xFF007bff)
+    color = Color(0xFFffffff)
    )
 
    Spacer(modifier = Modifier.height(8.dp))
@@ -124,8 +165,10 @@ fun LoginScreen() {
    // Texto de esqueceu senha
    Text(
     text = "Esqueceu a senha?",
-    color = Color(0xFF007bff)
+    color = Color(0xFFffffff)
    )
   }
  }
 }
+
+
