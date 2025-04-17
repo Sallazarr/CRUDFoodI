@@ -1,5 +1,6 @@
 package com.example.crudfoodi
-
+import androidx.compose.foundation.clickable
+import com.example.crudfoodi.nav.Navigation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -7,7 +8,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.foundation.background // <--- Este aqui é o que falta!
+import androidx.navigation.NavHostController
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
+import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.graphics.Brush
 
 import androidx.compose.material3.TextField
@@ -19,14 +23,14 @@ import androidx.compose.ui.res.painterResource
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+
 import com.example.crudfoodi.ui.theme.CRUDFoodITheme
 
 //Import para SQLite
@@ -49,13 +53,17 @@ class MainActivity : ComponentActivity() {
  override fun onCreate(savedInstanceState: Bundle?) {
   super.onCreate(savedInstanceState)
   setContent {
-   LoginScreen() // Chama a função que define a tela com Compose
+
+   CRUDFoodITheme {
+    Navigation()
+   }
   }
  }
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavHostController){
+
  // Toda a tela com cor de fundo personalizada
  Box(
   modifier = Modifier
@@ -75,9 +83,10 @@ fun LoginScreen() {
     painter = painterResource(id = R.drawable.logobgless),
     contentDescription = "Logo FoodI",
     modifier = Modifier
-     .height(250.dp) // Ajuste o tamanho como quiser
-     .width(250.dp)
-     .padding(bottom = 12.dp)
+     .height(200.dp) // Ajuste o tamanho como quiser
+     .width(200.dp)
+     .padding(bottom = 6.dp)
+
    )
    Text(
     text = "Bem-vindo à FoodI!",
@@ -85,7 +94,7 @@ fun LoginScreen() {
      fontSize = 24.sp,
      fontWeight = FontWeight.Bold
     ),
-    color = Color.Black
+    color = Color.White
    )
 
 
@@ -117,7 +126,9 @@ fun LoginScreen() {
 
    // Input de Senha
    TextField(
-    value = "",
+    visualTransformation = PasswordVisualTransformation(),
+
+            value = "",
     onValueChange = {},
     label = { Text("Senha") },
     modifier = Modifier
@@ -157,7 +168,9 @@ fun LoginScreen() {
    // Texto de registrar
    Text(
     text = "Registrar-se",
-    color = Color(0xFFffffff)
+    color = Color(0xFFffffff),
+            modifier = Modifier
+             .clickable { navController.navigate("register") }
    )
 
    Spacer(modifier = Modifier.height(8.dp))
