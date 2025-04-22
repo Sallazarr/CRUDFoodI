@@ -1,5 +1,5 @@
 package com.example.crudfoodi
-
+import com.example.crudfoodi.db.DBHelper
 import androidx.compose.foundation.clickable
 
 import androidx.compose.ui.Alignment
@@ -35,9 +35,40 @@ import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+import android.net.Uri
+import android.widget.Toast
+
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+
 @Composable
 fun RegisterStoreScreen(navController: NavHostController) {
     // Tela de Registro
+
+    val context = LocalContext.current
+    val dbHelper = DBHelper(context)
+
+
+
+    var endereco by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+    var cnpj by remember { mutableStateOf("") }
+    var nomeLoja by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
+
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        imageUri.value = uri
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,55 +104,10 @@ fun RegisterStoreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(30.dp))
 
             // Inputs de Registro
-            TextField(
-                value = "",
-                onValueChange = {},
-                label = { Text("Nome Proprietário") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFF007bff),
-                    unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
-                    cursorColor = Color(0xFF007bff)
-                ),
-                textStyle = TextStyle(color = Color.Black)
-            )
-
-
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
-                label = { Text("Sobrenome Proprietário") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFF007bff),
-                    unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
-                    cursorColor = Color(0xFF007bff)
-                ),
-                textStyle = TextStyle(color = Color.Black)
-            )
-
-
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
-                value = "",
-                onValueChange = {},
+                value = cnpj,
+                onValueChange = {cnpj = it},
                 label = { Text("CNPJ") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,8 +127,8 @@ fun RegisterStoreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = nomeLoja,
+                onValueChange = {nomeLoja = it},
                 label = { Text("Nome Estabelecimento") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,8 +148,8 @@ fun RegisterStoreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = {email = it},
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -183,8 +169,8 @@ fun RegisterStoreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = senha,
+                onValueChange = {senha = it},
                 label = { Text("Senha") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -201,11 +187,100 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color.Black)
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+            TextField(
+                value = endereco,
+                onValueChange = {endereco = it},
+                label = { Text("Endereço") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color(0xFF007bff),
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color(0xFF007bff)
+                ),
+                textStyle = TextStyle(color = Color.Black)
+            )
+
+
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TextField(
+                value = celular,
+                onValueChange = {celular = it},
+                label = { Text("Celular") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color(0xFF007bff),
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color(0xFF007bff)
+                ),
+                textStyle = TextStyle(color = Color.Black)
+            )
+
+
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = {},
+                onClick = { launcher.launch("image/*") },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+            ) {
+                Text("Selecionar Imagem do Restaurante", color = Color(0xFF007bff))
+            }
+
+            imageUri.value?.let {
+                Text("Imagem selecionada: ${it.lastPathSegment}", color = Color.White, fontSize = 12.sp)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    val imagemPath = imageUri.value?.toString() ?: ""
+
+
+
+                    val resultado = dbHelper.insertRestaurante(
+                        nome = nomeLoja,
+                        celular = celular, // você pode adicionar um campo se quiser
+                        endereco = endereco, // idem
+                        imagem = imagemPath,
+                        email = email,
+                        senha = senha,
+                        cnpj = cnpj);
+
+                        if (resultado) {
+                            // Sucesso no cadastro
+                            Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                            // Navega para a tela de login após o sucesso
+                            navController.navigate("login")
+                        } else {
+                            // Falha no cadastro
+                            Toast.makeText(
+                                context,
+                                "Falha no cadastro. Tente novamente.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
+                    // Aqui você pode adicionar navegação ou alerta de sucesso
+                    navController.navigate("login") // ou qualquer rota após o cadastro
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -215,7 +290,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 Text("Criar Conta", color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Texto de registro
             Text(

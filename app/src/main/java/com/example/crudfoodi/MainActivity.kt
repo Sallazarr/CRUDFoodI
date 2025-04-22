@@ -10,8 +10,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.foundation.background // <--- Este aqui é o que falta!
 import androidx.navigation.NavHostController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.example.crudfoodi.db.DBHelper
 
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.graphics.Brush
 
 import androidx.compose.material3.TextField
@@ -33,20 +33,18 @@ import androidx.compose.ui.Modifier
 
 import com.example.crudfoodi.ui.theme.CRUDFoodITheme
 
-//Import para SQLite
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
-import androidx.appcompat.app.AppCompatActivity
 
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.sp
+
+import android.widget.Toast
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
 
@@ -63,6 +61,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen(navController: NavHostController){
+
+ val context = LocalContext.current
+ val dbHelper = DBHelper(context)
+
+ var email by remember { mutableStateOf("") }
+ var senha by remember { mutableStateOf("") }
+
+ var mostrarDialogo by remember { mutableStateOf(false) }
+ var tipoDialogo by remember { mutableStateOf(Pair(false, false)) }
 
  // Toda a tela com cor de fundo personalizada
  Box(
@@ -102,8 +109,8 @@ fun LoginScreen(navController: NavHostController){
 
    // Input de Email
    TextField(
-    value = "",
-    onValueChange = {},
+    value = email,
+    onValueChange = {email = it},
     label = { Text("Email") },
     modifier = Modifier
      .fillMaxWidth()
@@ -128,8 +135,8 @@ fun LoginScreen(navController: NavHostController){
    TextField(
     visualTransformation = PasswordVisualTransformation(),
 
-            value = "",
-    onValueChange = {},
+            value = senha,
+    onValueChange = {senha = it},
     label = { Text("Senha") },
     modifier = Modifier
      .fillMaxWidth()
@@ -151,7 +158,27 @@ fun LoginScreen(navController: NavHostController){
 
    // Botão de Entrar
    Button(
-    onClick = {},
+    onClick = {val (clienteExiste, restauranteExiste) = dbHelper.verificarTiposDeConta(email)
+
+     when {
+      clienteExiste && restauranteExiste -> {
+       tipoDialogo = Pair(true, true)
+       mostrarDialogo = true
+      }
+
+      clienteExiste -> {
+       navController.navigate("home_cliente")
+      }
+
+      restauranteExiste -> {
+       navController.navigate("home_restaurante")
+      }
+
+      else -> {
+       Toast.makeText(context, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
+      }
+     }},
+
     modifier = Modifier
      .fillMaxWidth()
      .height(50.dp), // Altura do botão
@@ -181,6 +208,32 @@ fun LoginScreen(navController: NavHostController){
     color = Color(0xFFffffff)
    )
   }
+
+  // 🔽 Dialogo de escolha se for os dois
+  if (mostrarDialogo && tipoDialogo.first && tipoDialogo.second) {
+   AlertDialog(
+    onDismissRequest = { mostrarDialogo = false },
+    confirmButton = {
+     TextButton(onClick = {
+      mostrarDialogo = false
+      navController.navigate("home_cliente")
+     }) {
+      Text("Entrar como Cliente")
+     }
+    },
+    dismissButton = {
+     TextButton(onClick = {
+      mostrarDialogo = false
+      navController.navigate("home_restaurante")
+     }) {
+      Text("Entrar como Restaurante")
+     }
+    },
+    title = { Text("Tipo de Conta") },
+    text = { Text("Email cadastrado como Cliente e Restaurante. Como deseja entrar?") }
+   )
+  }
+
  }
 }
 

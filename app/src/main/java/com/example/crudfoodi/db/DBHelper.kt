@@ -1,5 +1,5 @@
 package com.example.crudfoodi.db
-
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -31,7 +31,9 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 nome TEXT,
                 celular TEXT,
                 endereco TEXT,
-                imagem TEXT
+                imagem TEXT,
+                email text,
+                senha text
             )
         """.trimIndent()
 
@@ -75,4 +77,50 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.execSQL("DROP TABLE IF EXISTS cliente")
         onCreate(db)
     }
+    fun inserirCliente(nome: String, sobrenome: String, celular: String, email: String, senha: String): Boolean {
+        val db = this.writableDatabase
+        val contentValues = android.content.ContentValues()
+        contentValues.put("nome", nome)
+        contentValues.put("sobrenome", sobrenome)
+        contentValues.put("celular", celular)
+        contentValues.put("email", email)
+        contentValues.put("senha", senha)
+
+        val resultado = db.insert("cliente", null, contentValues)
+        db.close()
+        return resultado != -1L
+
+    }
+    fun insertRestaurante(nome: String, celular: String, endereco: String, imagem: String, email: String, senha: String, cnpj:String): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("nome", nome)
+            put("celular", celular)
+            put("endereco", endereco)
+            put("imagem", imagem)
+            put("email", email)
+            put("senha", senha)
+            put("cpnj", cnpj)
+        }
+        val result = db.insert("restaurante", null, values)
+        db.close()
+        return result != -1L
+    }
+    fun verificarTiposDeConta(email: String): Pair<Boolean, Boolean> {
+        val db = this.readableDatabase
+
+        val cursorCliente = db.rawQuery("SELECT * FROM cliente WHERE email = ?", arrayOf(email))
+        val clienteExiste = cursorCliente.moveToFirst()
+        cursorCliente.close()
+
+        val cursorRestaurante = db.rawQuery("SELECT * FROM restaurante WHERE email = ?", arrayOf(email))
+        val restauranteExiste = cursorRestaurante.moveToFirst()
+        cursorRestaurante.close()
+
+        db.close()
+        return Pair(clienteExiste, restauranteExiste)
+    }
+
+
 }
+

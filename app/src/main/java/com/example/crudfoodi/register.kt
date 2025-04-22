@@ -1,20 +1,43 @@
 package com.example.crudfoodi
+
+import android.widget.Toast
 import androidx.compose.foundation.clickable
+
+import androidx.compose.ui.unit.dp
+
+import androidx.compose.ui.draw.clip
+
+import androidx.compose.foundation.background
+
+import androidx.compose.material3.TextField
+
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.platform.LocalContext
+
+import androidx.compose.ui.unit.sp
+import com.example.crudfoodi.db.DBHelper
+
+
+
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
+
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.foundation.background // <--- Este aqui é o que falta!
+
 import androidx.navigation.NavHostController
 import androidx.compose.ui.graphics.Brush
 
-import androidx.compose.material3.TextField
+
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
+
 
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,18 +46,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-//Import para SQLite
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     // Tela de Registro
+
+    // Variáveis de estado para os campos
+    var nome by remember { mutableStateOf("") }
+    var sobrenome by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val db = DBHelper(context)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -67,8 +96,8 @@ fun RegisterScreen(navController: NavHostController) {
 
             // Inputs de Registro
             TextField(
-                value = "",
-                onValueChange = {},
+                value = nome,
+                onValueChange = {nome = it},
                 label = { Text("Nome") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,8 +117,8 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = sobrenome,
+                onValueChange = {sobrenome = it},
                 label = { Text("Sobrenome") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,8 +138,8 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = {email = it},
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -130,8 +159,8 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = celular,
+                onValueChange = {celular = it},
                 label = { Text("Celular") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,8 +180,8 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                value = "",
-                onValueChange = {},
+                value = senha,
+                onValueChange = {senha = it},
                 label = { Text("Senha") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -172,7 +201,16 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    val resultado = db.inserirCliente(nome, sobrenome, celular, email, senha)
+
+                    if (resultado) {
+                        Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_LONG).show()
+                        navController.navigate("login")
+                    } else {
+                        Toast.makeText(context, "Erro ao cadastrar!", Toast.LENGTH_LONG).show()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -188,7 +226,7 @@ fun RegisterScreen(navController: NavHostController) {
             Text(
                 text = "Já tem uma conta? Entrar",
                 color = Color(0xFFffffff),
-                modifier = Modifier.clickable { navController.navigate("MainActivity") }
+                modifier = Modifier.clickable { navController.navigate("login") }
             )
             Text(
                 text = "Deseja cadastrar um restaurante?",
