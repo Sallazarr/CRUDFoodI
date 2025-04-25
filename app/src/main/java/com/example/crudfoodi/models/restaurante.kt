@@ -1,4 +1,9 @@
 package com.example.crudfoodi.models
 
-class restaurante {
-}
+data class Restaurante(
+    val id: Int,
+    val nome: String,
+    val celular: String,
+    val endereco: String,
+    val imagem: String
+)

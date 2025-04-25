@@ -3,7 +3,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
+import com.example.crudfoodi.models.Restaurante
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -120,6 +120,28 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.close()
         return Pair(clienteExiste, restauranteExiste)
     }
+
+    fun listarRestaurantes(): List<Restaurante> {
+        val lista = mutableListOf<Restaurante>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM restaurante", null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"))
+                val celular = cursor.getString(cursor.getColumnIndexOrThrow("celular"))
+                val endereco = cursor.getString(cursor.getColumnIndexOrThrow("endereco"))
+                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem"))
+
+                lista.add(Restaurante(id, nome, celular, endereco, imagem))
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        return lista
+    }
+
 
 
 }

@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation ("androidx.navigation:navigation-compose:2.8.9")
     implementation ("androidx.compose.foundation:foundation:1.5.0")
+    implementation ("io.coil-kt:coil-compose:2.0.0") // Para carregamento de imagens de forma assíncrona
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

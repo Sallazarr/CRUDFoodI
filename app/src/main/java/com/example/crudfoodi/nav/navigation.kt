@@ -6,6 +6,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crudfoodi.LoginScreen
 import com.example.crudfoodi.RegisterScreen
 import com.example.crudfoodi.RegisterStoreScreen
+import com.example.crudfoodi.ui.HomeCliente
 import androidx.compose.runtime.Composable
 
 
@@ -17,5 +18,6 @@ fun Navigation() {
         composable("login") {LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("registerStore") { RegisterStoreScreen(navController) }
+        composable("home_cliente"){HomeCliente(navController)}
     }
 }

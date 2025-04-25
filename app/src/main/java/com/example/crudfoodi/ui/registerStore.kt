@@ -278,8 +278,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                         }
 
 
-                    // Aqui você pode adicionar navegação ou alerta de sucesso
-                    navController.navigate("login") // ou qualquer rota após o cadastro
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
