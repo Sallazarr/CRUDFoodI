@@ -1,4 +1,4 @@
-package com.example.crudfoodi.ui
+package com.example.crudfoodi
 
 
 import androidx.compose.foundation.clickable
@@ -164,30 +164,26 @@ fun CategoriaCard(titulo: String, imagemResId: Int) {
 }
 
 @Composable
-fun RestaurantCard(nome: String, imagemPath: String) {
-    val context = LocalContext.current
-    val dbHelper = DBHelper(context)
-    val bitmap = remember(imagemPath) {
-        val file = File(imagemPath)
-        if (file.exists()) {
-            BitmapFactory.decodeFile(imagemPath)
-        } else {
-            null
-        }
-    }
+fun RestaurantCard(
+    nome: String,
+    imagemPath: String
+) {
+    // Debug: ver o caminho da imagem no Logcat
+    println("Imagem path: $imagemPath")
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(6.dp)
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(modifier = Modifier.padding(12.dp)) {
-            // Usando Coil para carregar a imagem
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            // Corrigido: adiciona "file://" para carregar imagem local
             AsyncImage(
-                model = imagemPath, // Caminho da imagem, que pode ser uma URL ou um arquivo local
+                model = "file://$imagemPath",
                 contentDescription = nome,
                 modifier = Modifier
                     .size(80.dp)
@@ -195,11 +191,11 @@ fun RestaurantCard(nome: String, imagemPath: String) {
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(nome, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
-                Text("Toque para ver mais", fontSize = 14.sp, color = Color.Gray)
+                Text(text = nome, style = MaterialTheme.typography.titleMedium)
+ 
             }
         }
     }

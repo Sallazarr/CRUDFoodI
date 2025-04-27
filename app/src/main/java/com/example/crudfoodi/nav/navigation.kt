@@ -6,7 +6,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crudfoodi.LoginScreen
 import com.example.crudfoodi.RegisterScreen
 import com.example.crudfoodi.RegisterStoreScreen
-import com.example.crudfoodi.ui.HomeCliente
+import com.example.crudfoodi.HomeCliente
 import androidx.compose.runtime.Composable
 
 

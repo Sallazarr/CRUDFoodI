@@ -100,12 +100,13 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put("imagem", imagem)
             put("email", email)
             put("senha", senha)
-            put("cpnj", cnpj)
+            put("cnpj", cnpj) // Corrigido para "cnpj"
         }
         val result = db.insert("restaurante", null, values)
         db.close()
         return result != -1L
     }
+
     fun verificarTiposDeConta(email: String): Pair<Boolean, Boolean> {
         val db = this.readableDatabase
 

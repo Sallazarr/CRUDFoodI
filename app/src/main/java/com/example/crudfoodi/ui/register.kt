@@ -107,11 +107,11 @@ fun RegisterScreen(navController: NavHostController) {
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color(0xFF007bff),
                     cursorColor = Color(0xFF007bff)
                 ),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,11 +128,11 @@ fun RegisterScreen(navController: NavHostController) {
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color(0xFF007bff),
                     cursorColor = Color(0xFF007bff)
                 ),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -149,11 +149,11 @@ fun RegisterScreen(navController: NavHostController) {
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color(0xFF007bff),
                     cursorColor = Color(0xFF007bff)
                 ),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -170,11 +170,11 @@ fun RegisterScreen(navController: NavHostController) {
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color(0xFF007bff),
                     cursorColor = Color(0xFF007bff)
                 ),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -191,11 +191,11 @@ fun RegisterScreen(navController: NavHostController) {
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color(0xFF007bff),
-                    unfocusedLabelColor = Color.Gray,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color(0xFF007bff),
                     cursorColor = Color(0xFF007bff)
                 ),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
             Spacer(modifier = Modifier.height(24.dp))
