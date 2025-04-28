@@ -99,6 +99,7 @@ fun RegisterScreen(navController: NavHostController) {
                 value = nome,
                 onValueChange = {nome = it},
                 label = { Text("Nome") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -108,7 +109,7 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -120,6 +121,7 @@ fun RegisterScreen(navController: NavHostController) {
                 value = sobrenome,
                 onValueChange = {sobrenome = it},
                 label = { Text("Sobrenome") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -129,7 +131,7 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -141,6 +143,7 @@ fun RegisterScreen(navController: NavHostController) {
                 value = email,
                 onValueChange = {email = it},
                 label = { Text("Email") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -150,7 +153,7 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -162,6 +165,7 @@ fun RegisterScreen(navController: NavHostController) {
                 value = celular,
                 onValueChange = {celular = it},
                 label = { Text("Celular") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -171,7 +175,7 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -183,6 +187,7 @@ fun RegisterScreen(navController: NavHostController) {
                 value = senha,
                 onValueChange = {senha = it},
                 label = { Text("Senha") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -192,7 +197,7 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))

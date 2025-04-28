@@ -109,6 +109,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = cnpj,
                 onValueChange = { cnpj = it },
                 label = { Text("CNPJ") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -118,7 +119,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -130,6 +131,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = nomeLoja,
                 onValueChange = {nomeLoja = it},
                 label = { Text("Nome Estabelecimento") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -139,7 +141,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -151,6 +153,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = email,
                 onValueChange = {email = it},
                 label = { Text("Email") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -160,7 +163,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -172,6 +175,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = senha,
                 onValueChange = {senha = it},
                 label = { Text("Senha") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -181,7 +185,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -193,6 +197,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = endereco,
                 onValueChange = {endereco = it},
                 label = { Text("Endereço") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -202,7 +207,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -216,6 +221,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = celular,
                 onValueChange = {celular = it},
                 label = { Text("Celular") },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -225,7 +231,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     focusedIndicatorColor = Color(0xFF007bff),
                     unfocusedIndicatorColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color(0xFF007bff),
+                    unfocusedLabelColor = Color.Gray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
@@ -261,7 +267,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                         imagem = imagemPath,
                         email = email,
                         senha = senha,
-                        cnpj = cnpj);
+                        cnpj = cnpj)
 
                         if (resultado) {
                             // Sucesso no cadastro

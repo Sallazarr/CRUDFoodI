@@ -33,8 +33,15 @@ import androidx.compose.ui.Modifier
 
 import com.example.crudfoodi.ui.theme.CRUDFoodITheme
 
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+
+import com.example.crudfoodi.permission.requestStoragePermission
+
 import androidx.compose.material3.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,199 +49,215 @@ import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.unit.sp
 
-import android.widget.Toast
+
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
+
+ // Registrar o ActivityResultLauncher para solicitar permissão
+ private val requestPermissionLauncher =
+  registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
+   if (isGranted) {
+    Toast.makeText(this, "Permissão concedida", Toast.LENGTH_SHORT).show()
+   } else {
+    Toast.makeText(this, "Permissão negada", Toast.LENGTH_SHORT).show()
+   }
+  }
 
  override fun onCreate(savedInstanceState: Bundle?) {
   super.onCreate(savedInstanceState)
   setContent {
-
    CRUDFoodITheme {
-    Navigation()
+    // Chama o composable para solicitar permissão
+    Navigation(requestPermissionLauncher)
    }
+
   }
  }
 }
 
-@Composable
-fun LoginScreen(navController: NavHostController){
+ @Composable
 
- val context = LocalContext.current
- val dbHelper = DBHelper(context)
+ fun LoginScreen(navController: NavHostController, requestPermissionLauncher: ActivityResultLauncher<String>) {
+  requestStoragePermission(requestPermissionLauncher)
+  val context = LocalContext.current
+  val dbHelper = DBHelper(context)
 
- var email by remember { mutableStateOf("") }
- var senha by remember { mutableStateOf("") }
+  var email by remember { mutableStateOf("") }
+  var senha by remember { mutableStateOf("") }
 
- var mostrarDialogo by remember { mutableStateOf(false) }
- var tipoDialogo by remember { mutableStateOf(Pair(false, false)) }
+  var mostrarDialogo by remember { mutableStateOf(false) }
+  var tipoDialogo by remember { mutableStateOf(Pair(false, false)) }
 
- // Toda a tela com cor de fundo personalizada
- Box(
-  modifier = Modifier
-   .fillMaxSize()
-   .background(
-    brush = Brush.verticalGradient(
-     colors = listOf(Color.White, Color(0xFF007bff))
+  // Toda a tela com cor de fundo personalizada
+  Box(
+   modifier = Modifier
+    .fillMaxSize()
+    .background(
+     brush = Brush.verticalGradient(
+      colors = listOf(Color.White, Color(0xFF007bff))
+     )
     )
-   )
-   .padding(24.dp),
-  contentAlignment = Alignment.Center
- ) {
-  Column(
-   horizontalAlignment = Alignment.CenterHorizontally, // Centraliza os itens horizontalmente
+    .padding(24.dp),
+   contentAlignment = Alignment.Center
   ) {
-   Image(
-    painter = painterResource(id = R.drawable.logobgless),
-    contentDescription = "Logo FoodI",
-    modifier = Modifier
-     .height(200.dp) // Ajuste o tamanho como quiser
-     .width(200.dp)
-     .padding(bottom = 6.dp)
-
-   )
-   Text(
-    text = "Bem-vindo à FoodI!",
-    style = TextStyle(
-     fontSize = 24.sp,
-     fontWeight = FontWeight.Bold
-    ),
-    color = Color.White
-   )
-
-
-   Spacer(modifier = Modifier.height(40.dp))
-
-   // Input de Email
-   TextField(
-    value = email,
-    onValueChange = {email = it},
-    label = { Text("Email") },
-    modifier = Modifier
-     .fillMaxWidth()
-     .clip(RoundedCornerShape(10.dp)),
-    colors = TextFieldDefaults.colors(
-     focusedContainerColor = Color.White,
-     unfocusedContainerColor = Color.White,
-     focusedIndicatorColor = Color(0xFF007bff),
-     unfocusedIndicatorColor = Color.LightGray,
-     focusedLabelColor = Color.Gray,
-     unfocusedLabelColor = Color(0xFF007bff),
-     cursorColor = Color(0xFF007bff)
-    ),
-    textStyle = TextStyle(color = Color(0xFF007bff))
-   )
-
-
-
-   Spacer(modifier = Modifier.height(16.dp))
-
-   // Input de Senha
-   TextField(
-    visualTransformation = PasswordVisualTransformation(),
-
-            value = senha,
-    onValueChange = {senha = it},
-    label = { Text("Senha") },
-    modifier = Modifier
-     .fillMaxWidth()
-     .clip(RoundedCornerShape(10.dp)),
-    colors = TextFieldDefaults.colors(
-     focusedContainerColor = Color.White,
-     unfocusedContainerColor = Color.White,
-     focusedIndicatorColor = Color(0xFF007bff),
-     unfocusedIndicatorColor = Color.LightGray,
-     focusedLabelColor = Color.Gray,
-     unfocusedLabelColor = Color(0xFF007bff),
-     cursorColor = Color(0xFF007bff)
-    ),
-    textStyle = TextStyle(color = Color(0xFF007bff))
-   )
-
-
-   Spacer(modifier = Modifier.height(24.dp))
-
-   // Botão de Entrar
-   Button(
-    onClick = {val (clienteExiste, restauranteExiste) = dbHelper.verificarTiposDeConta(email)
-
-     when {
-      clienteExiste && restauranteExiste -> {
-       tipoDialogo = Pair(true, true)
-       mostrarDialogo = true
-      }
-
-      clienteExiste -> {
-       navController.navigate("home_cliente")
-      }
-
-      restauranteExiste -> {
-       navController.navigate("home_restaurante")
-      }
-
-      else -> {
-       Toast.makeText(context, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
-      }
-     }},
-
-    modifier = Modifier
-     .fillMaxWidth()
-     .height(50.dp), // Altura do botão
-    shape = RoundedCornerShape(10.dp), // Borda arredondada
-    colors = ButtonDefaults.buttonColors(
-     containerColor = Color(0xFF007bff) // Cor do botão
-    )
+   Column(
+    horizontalAlignment = Alignment.CenterHorizontally, // Centraliza os itens horizontalmente
    ) {
-    Text("Entrar", color = Color.White)
+    Image(
+     painter = painterResource(id = R.drawable.logobgless),
+     contentDescription = "Logo FoodI",
+     modifier = Modifier
+      .height(200.dp) // Ajuste o tamanho como quiser
+      .width(200.dp)
+      .padding(bottom = 6.dp)
+
+    )
+    Text(
+     text = "Bem-vindo à FoodI!",
+     style = TextStyle(
+      fontSize = 24.sp,
+      fontWeight = FontWeight.Bold
+     ),
+     color = Color.White
+    )
+
+
+    Spacer(modifier = Modifier.height(40.dp))
+
+    // Input de Email
+    TextField(
+     value = email,
+     onValueChange = { email = it },
+     label = { Text("Email") },
+     modifier = Modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(10.dp)),
+     colors = TextFieldDefaults.colors(
+      focusedContainerColor = Color.White,
+      unfocusedContainerColor = Color.White,
+      focusedIndicatorColor = Color(0xFF007bff),
+      unfocusedIndicatorColor = Color.LightGray,
+      focusedLabelColor = Color.Gray,
+      unfocusedLabelColor = Color.Gray,
+      cursorColor = Color(0xFF007bff)
+     ),
+     textStyle = TextStyle(color = Color(0xFF007bff))
+    )
+
+
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // Input de Senha
+    TextField(
+     visualTransformation = PasswordVisualTransformation(),
+
+     value = senha,
+     onValueChange = { senha = it },
+     label = { Text("Senha") },
+
+     modifier = Modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(10.dp)),
+     colors = TextFieldDefaults.colors(
+      focusedContainerColor = Color.White,
+      unfocusedContainerColor = Color.White,
+      focusedIndicatorColor = Color(0xFF007bff),
+      unfocusedIndicatorColor = Color.LightGray,
+      focusedLabelColor = Color.Gray,
+      unfocusedLabelColor = Color.Gray,
+      cursorColor = Color(0xFF007bff)
+     ),
+     textStyle = TextStyle(color = Color(0xFF007bff))
+    )
+
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    // Botão de Entrar
+    Button(
+     onClick = {
+      val (clienteExiste, restauranteExiste) = dbHelper.verificarTiposDeConta(email)
+
+      when {
+       clienteExiste && restauranteExiste -> {
+        tipoDialogo = Pair(true, true)
+        mostrarDialogo = true
+       }
+
+       clienteExiste -> {
+        navController.navigate("home_cliente")
+       }
+
+       restauranteExiste -> {
+        navController.navigate("home_restaurante")
+       }
+
+       else -> {
+        Toast.makeText(context, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
+       }
+      }
+     },
+
+     modifier = Modifier
+      .fillMaxWidth()
+      .height(50.dp), // Altura do botão
+     shape = RoundedCornerShape(10.dp), // Borda arredondada
+     colors = ButtonDefaults.buttonColors(
+      containerColor = Color(0xFF007bff) // Cor do botão
+     )
+    ) {
+     Text("Entrar", color = Color.White)
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // Texto de registrar
+    Text(
+     text = "Registrar-se",
+     color = Color(0xFFffffff),
+     modifier = Modifier
+      .clickable { navController.navigate("register") }
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    // Texto de esqueceu senha
+    Text(
+     text = "Esqueceu a senha?",
+     color = Color(0xFFffffff)
+    )
    }
 
-   Spacer(modifier = Modifier.height(16.dp))
+   // 🔽 Dialogo de escolha se for os dois
+   if (mostrarDialogo && tipoDialogo.first && tipoDialogo.second) {
+    AlertDialog(
+     onDismissRequest = { mostrarDialogo = false },
+     confirmButton = {
+      TextButton(onClick = {
+       mostrarDialogo = false
+       navController.navigate("home_cliente")
+      }) {
+       Text("Entrar como Cliente")
+      }
+     },
+     dismissButton = {
+      TextButton(onClick = {
+       mostrarDialogo = false
+       navController.navigate("home_restaurante")
+      }) {
+       Text("Entrar como Restaurante")
+      }
+     },
+     title = { Text("Tipo de Conta") },
+     text = { Text("Email cadastrado como Cliente e Restaurante. Como deseja entrar?") }
+    )
+   }
 
-   // Texto de registrar
-   Text(
-    text = "Registrar-se",
-    color = Color(0xFFffffff),
-            modifier = Modifier
-             .clickable { navController.navigate("register") }
-   )
-
-   Spacer(modifier = Modifier.height(8.dp))
-
-   // Texto de esqueceu senha
-   Text(
-    text = "Esqueceu a senha?",
-    color = Color(0xFFffffff)
-   )
   }
-
-  // 🔽 Dialogo de escolha se for os dois
-  if (mostrarDialogo && tipoDialogo.first && tipoDialogo.second) {
-   AlertDialog(
-    onDismissRequest = { mostrarDialogo = false },
-    confirmButton = {
-     TextButton(onClick = {
-      mostrarDialogo = false
-      navController.navigate("home_cliente")
-     }) {
-      Text("Entrar como Cliente")
-     }
-    },
-    dismissButton = {
-     TextButton(onClick = {
-      mostrarDialogo = false
-      navController.navigate("home_restaurante")
-     }) {
-      Text("Entrar como Restaurante")
-     }
-    },
-    title = { Text("Tipo de Conta") },
-    text = { Text("Email cadastrado como Cliente e Restaurante. Como deseja entrar?") }
-   )
-  }
-
  }
-}
 
 

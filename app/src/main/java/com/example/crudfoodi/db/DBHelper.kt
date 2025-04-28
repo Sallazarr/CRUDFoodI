@@ -33,7 +33,8 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 endereco TEXT,
                 imagem TEXT,
                 email text,
-                senha text
+                senha text,
+                cnpj text
             )
         """.trimIndent()
 
@@ -91,7 +92,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return resultado != -1L
 
     }
-    fun insertRestaurante(nome: String, celular: String, endereco: String, imagem: String, email: String, senha: String, cnpj:String): Boolean {
+    fun insertRestaurante(nome: String, celular: String, endereco: String, imagem: String, email: String, senha: String, cnpj: String): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put("nome", nome)
@@ -100,7 +101,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put("imagem", imagem)
             put("email", email)
             put("senha", senha)
-            put("cnpj", cnpj) // Corrigido para "cnpj"
+            put("cnpj", cnpj)
         }
         val result = db.insert("restaurante", null, values)
         db.close()
@@ -133,17 +134,24 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 val nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"))
                 val celular = cursor.getString(cursor.getColumnIndexOrThrow("celular"))
                 val endereco = cursor.getString(cursor.getColumnIndexOrThrow("endereco"))
-                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem"))
 
-                lista.add(Restaurante(id, nome, celular, endereco, imagem))
+                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem")).let {
+                    when {
+                        it.startsWith("/") -> "file://$it"
+                        it.startsWith("content:") -> it
+                        else -> it
+                    }
+                }
+
+                val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
+                val senha = cursor.getString(cursor.getColumnIndexOrThrow("senha"))
+                val cnpj = cursor.getString(cursor.getColumnIndexOrThrow("cnpj"))
+
+                lista.add(Restaurante(id, nome, celular, endereco, imagem, email, senha, cnpj))
             } while (cursor.moveToNext())
         }
 
         cursor.close()
         return lista
     }
-
-
-
 }
-
