@@ -20,6 +20,6 @@ fun Navigation(requestPermissionLauncher: ActivityResultLauncher<String>) {
             requestPermissionLauncher = requestPermissionLauncher) }
         composable("register") { RegisterScreen(navController) }
         composable("registerStore") { RegisterStoreScreen(navController) }
-        composable("home_cliente"){HomeCliente(navController)}
+        composable("home_cliente"){HomeCliente(navController, requestPermissionLauncher)}
     }
 }

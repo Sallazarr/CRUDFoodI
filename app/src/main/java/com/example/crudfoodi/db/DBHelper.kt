@@ -135,13 +135,9 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 val celular = cursor.getString(cursor.getColumnIndexOrThrow("celular"))
                 val endereco = cursor.getString(cursor.getColumnIndexOrThrow("endereco"))
 
-                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem")).let {
-                    when {
-                        it.startsWith("/") -> "file://$it"
-                        it.startsWith("content:") -> it
-                        else -> it
-                    }
-                }
+                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem"))
+
+                // e depois adiciona normalmente na lista:
 
                 val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
                 val senha = cursor.getString(cursor.getColumnIndexOrThrow("senha"))

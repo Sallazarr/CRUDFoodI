@@ -1,11 +1,13 @@
 package com.example.crudfoodi
+import com.example.crudfoodi.permission.requestStoragePermission
 
 
-
+import com.example.crudfoodi.models.Restaurante
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,7 +15,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
-
+import android.Manifest
+import android.os.Build
+import androidx.activity.result.ActivityResultLauncher
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -23,6 +27,8 @@ import coil.compose.AsyncImage
 
 
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.padding
 
 
 
@@ -64,30 +70,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-// Adicione estas linhas junto com os outros imports
-import java.io.FileNotFoundException
-import java.lang.Exception // Para o 'e.message'
 
 import androidx.navigation.NavHostController
 
 import com.example.crudfoodi.db.DBHelper
 
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.style.TextAlign
 import coil.request.ImageRequest
+import java.io.File
+
 
 
 @Composable
-fun HomeCliente(navController: NavHostController) {
+fun HomeCliente(navController: NavHostController, requestPermissionLauncher: ActivityResultLauncher<String>) {
+    requestStoragePermission(requestPermissionLauncher)
     val context = LocalContext.current
     val dbHelper = DBHelper(context)
-    val listaRestaurantes by remember { mutableStateOf(dbHelper.listarRestaurantes()) }
+    val listaRestaurantes = remember { mutableStateListOf<Restaurante>() }
+
+    LaunchedEffect(Unit) {
+        val restaurantes = dbHelper.listarRestaurantes()
+        listaRestaurantes.clear()
+        listaRestaurantes.addAll(restaurantes)
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFF007bff))
+                    colorStops = arrayOf(
+                        0.0f to Color.White,
+                        0.7f to Color.White,
+                        1.0f to Color(0xFF60adff)
+                    )
                 )
             )
             .padding(16.dp)
@@ -106,20 +123,33 @@ fun HomeCliente(navController: NavHostController) {
             Text(
                 text = "Sugestões para você",
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                color = Color.White,
+                color = Color.DarkGray,
                 modifier = Modifier.padding(start = 8.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CategoriaCard("Hambúrguer", R.drawable.burguer)
-                CategoriaCard("Pizza", R.drawable.pizza)
-                CategoriaCard("Sushi", R.drawable.sushi)
-                CategoriaCard("Prato Feito", R.drawable.prato_feito)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    CategoriaCard("Hambúrguer", R.drawable.burguer, Modifier.weight(1f))
+                    CategoriaCard("Pizza", R.drawable.pizza, Modifier.weight(1f))
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CategoriaCard("Sushi", R.drawable.sushi, Modifier.weight(1f))
+                    CategoriaCard("Prato Feito", R.drawable.prato_feito, Modifier.weight(1f))
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -127,7 +157,7 @@ fun HomeCliente(navController: NavHostController) {
             Text(
                 text = "Restaurantes disponíveis",
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold),
-                color = Color.White,
+                color = Color.DarkGray,
                 modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
 
@@ -147,29 +177,45 @@ fun HomeCliente(navController: NavHostController) {
 
 
 @Composable
-fun CategoriaCard(titulo: String, imagemResId: Int) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(80.dp)
-            .clickable { /* ação ao clicar */ }
+fun CategoriaCard(titulo: String, imagemResId: Int, modifier: Modifier = Modifier) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
+        modifier = modifier
+            .height(95.dp)
+            .padding(4.dp)
     ) {
-        Image(
-            painter = painterResource(id = imagemResId),
-            contentDescription = titulo,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .size(60.dp)
-                .clip(RoundedCornerShape(12.dp))
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        Text(
-            text = titulo,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.White
-        )
+                .fillMaxSize()
+                .padding(6.dp)
+        ) {
+            Image(
+                painter = painterResource(id = imagemResId),
+                contentDescription = titulo,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = titulo,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF333333),
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+        }
     }
 }
+
 
 @Composable
 fun RestaurantCard(
@@ -178,60 +224,14 @@ fun RestaurantCard(
     endereco: String
 ) {
     val context = LocalContext.current
-    val contentResolver = context.contentResolver
+    val file = File(imagemPath)
 
-    // 1. Verificação de permissões
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (!isGranted) {
-            Log.w("PERMISSIONS", "Permissão de leitura negada")
-        }
-    }
-
-    // 2. Processamento seguro da URI
-    val uri = remember(imagemPath) {
-        try {
-            Uri.parse(imagemPath)
-                .normalizeScheme()
-                .buildUpon()
-                .build()
-                .also {
-                    Log.d("URI_DEBUG", "URI processada: $it")
-                }
-        } catch (e: Exception) {
-            Log.e("URI_ERROR", "Falha ao processar URI: $imagemPath", e)
-            null
-        }
-    }
-
-    // 3. Verificação de acesso ao arquivo
-    var hasFileAccess by remember { mutableStateOf(false) }
-
-    LaunchedEffect(uri) {
-        uri?.let {
-            try {
-                contentResolver.openInputStream(it)?.use {
-                    hasFileAccess = true
-                    Log.d("FILE_ACCESS", "Acesso ao arquivo concedido")
-                }
-            } catch (e: SecurityException) {
-                Log.e("SECURITY", "Erro de permissão: ${e.message}")
-                hasFileAccess = false
-                permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            } catch (e: FileNotFoundException) {
-                Log.e("FILE_ERROR", "Arquivo não encontrado: ${e.message}")
-                hasFileAccess = false
-            }
-        }
-    }
-
-    // 4. Componente principal
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(8.dp),
+            .padding(8.dp)
+        .border(2.dp, Color.DarkGray, shape = RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp)
@@ -242,25 +242,27 @@ fun RestaurantCard(
                 .padding(12.dp)
                 .fillMaxSize()
         ) {
-            // 5. Exibição da imagem
-            if (hasFileAccess && uri != null) {
-                // Modifique a chamada do AsyncImage para:
+            if (file.exists()) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(uri)
-                        .apply {
-                            if (uri?.scheme == "content") {
-                                allowConversionToBitmap(false)
-                            }
-                        }
+                        .data(file) // ← caminho do arquivo salvo internamente
+                        .crossfade(true)
                         .build(),
+                    contentDescription = nome,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = R.drawable.error),
+                    placeholder = painterResource(id = R.drawable.loading)
+                )
+                Log.d("IMAGE_LOADING", "Imagem carregada de: ${file.absolutePath}")
             } else {
                 ImageFallback()
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // 6. Informações do restaurante
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxHeight()
@@ -280,6 +282,7 @@ fun RestaurantCard(
         }
     }
 }
+
 
 @Composable
 private fun ImageFallback() {

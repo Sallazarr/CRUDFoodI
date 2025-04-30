@@ -1,4 +1,5 @@
 package com.example.crudfoodi
+import android.content.Intent
 import com.example.crudfoodi.db.DBHelper
 import androidx.compose.foundation.clickable
 
@@ -46,16 +47,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.example.crudfoodi.moveImage.salvarImagemNoApp
 
 
 @Composable
 fun RegisterStoreScreen(navController: NavHostController) {
-    // Tela de Registro
-
     val context = LocalContext.current
     val dbHelper = DBHelper(context)
-
-
 
     var endereco by remember { mutableStateOf("") }
     var celular by remember { mutableStateOf("") }
@@ -63,20 +62,29 @@ fun RegisterStoreScreen(navController: NavHostController) {
     var nomeLoja by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
-
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        imageUri.value = uri
+    val contentResolver = context.contentResolver
+
+    // CORREÇÃO: launcher deve ser definido fora do botão
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        if (uri != null) {
+            imageUri.value = uri
+            try {
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+        }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFF007bff))
-                )
-            )
+            .background(Brush.verticalGradient(colors = listOf(Color.White, Color(0xFF007bff))))
             .padding(10.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -85,31 +93,27 @@ fun RegisterStoreScreen(navController: NavHostController) {
         Column(
             modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-        Image(
+        ) {
+            Image(
                 painter = painterResource(id = R.drawable.logobgless),
                 contentDescription = "Logo FoodI",
                 modifier = Modifier
                     .height(200.dp)
                     .width(200.dp)
-                    .padding( 3.dp)
+                    .padding(3.dp)
             )
+
             Text(
                 text = "Criar Conta",
                 style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = Color.White
             )
-
             Spacer(modifier = Modifier.height(30.dp))
 
-            // Inputs de Registro
-
-            TextField(
+            OutlinedTextField(
                 value = cnpj,
                 onValueChange = { cnpj = it },
                 label = { Text("CNPJ") },
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -125,13 +129,10 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = nomeLoja,
-                onValueChange = {nomeLoja = it},
-                label = { Text("Nome Estabelecimento") },
-
+                onValueChange = { nomeLoja = it },
+                label = { Text("Nome da Loja") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -147,13 +148,10 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = email,
-                onValueChange = {email = it},
+                onValueChange = { email = it },
                 label = { Text("Email") },
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -169,13 +167,11 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = senha,
-                onValueChange = {senha = it},
+                onValueChange = { senha = it },
                 label = { Text("Senha") },
-
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -191,13 +187,10 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = endereco,
-                onValueChange = {endereco = it},
+                onValueChange = { endereco = it },
                 label = { Text("Endereço") },
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -213,15 +206,10 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = celular,
-                onValueChange = {celular = it},
+                onValueChange = { celular = it },
                 label = { Text("Celular") },
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
@@ -237,12 +225,13 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-
-
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Botão para selecionar imagem
             Button(
-                onClick = { launcher.launch("image/*") },
+                onClick = {
+                    launcher.launch(arrayOf("image/*"))
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
                 Text("Selecionar Imagem do Restaurante", color = Color(0xFF007bff))
@@ -256,35 +245,28 @@ fun RegisterStoreScreen(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    val imagemPath = imageUri.value?.toString() ?: ""
+                    // Salva a imagem no diretório interno do app e obtém o caminho
+                    val imagemSalva = imageUri.value?.let { uri ->
+                        salvarImagemNoApp(context, uri)  // Chama a função para salvar a imagem
+                    } ?: ""  // Caso não haja imagem, coloca uma string vazia
 
-
-
+                    // Chama o insertRestaurante com o caminho da imagem interna
                     val resultado = dbHelper.insertRestaurante(
                         nome = nomeLoja,
-                        celular = celular, // você pode adicionar um campo se quiser
-                        endereco = endereco, // idem
-                        imagem = imagemPath,
+                        celular = celular,
+                        endereco = endereco,
+                        imagem = imagemSalva,  // Passa o caminho local
                         email = email,
                         senha = senha,
-                        cnpj = cnpj)
+                        cnpj = cnpj
+                    )
 
-                        if (resultado) {
-                            // Sucesso no cadastro
-                            Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                            // Navega para a tela de login após o sucesso
-                            navController.navigate("login")
-                        } else {
-                            // Falha no cadastro
-                            Toast.makeText(
-                                context,
-                                "Falha no cadastro. Tente novamente.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-
-
+                    if (resultado) {
+                        Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        navController.navigate("login")
+                    } else {
+                        Toast.makeText(context, "Falha no cadastro. Tente novamente.", Toast.LENGTH_SHORT).show()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -297,10 +279,9 @@ fun RegisterStoreScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Texto de registro
             Text(
                 text = "Já tem uma conta? Entrar",
-                color = Color(0xFFffffff),
+                color = Color.White,
                 modifier = Modifier.clickable { navController.navigate("login") }
             )
         }
