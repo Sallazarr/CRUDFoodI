@@ -14,6 +14,20 @@ import com.example.crudfoodi.db.DBHelper
 
 import androidx.compose.ui.graphics.Brush
 
+import androidx.compose.ui.platform.LocalFocusManager
+
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardActions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalFocusManager
+
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.material3.TextField
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.Image
@@ -84,6 +98,9 @@ class MainActivity : ComponentActivity() {
   requestStoragePermission(requestPermissionLauncher)
   val context = LocalContext.current
   val dbHelper = DBHelper(context)
+  val focusRequesterEmail = remember { FocusRequester() }
+  val focusRequesterSenha = remember { FocusRequester() } // Próximo campo
+  val focusManager = LocalFocusManager.current
 
   var email by remember { mutableStateOf("") }
   var senha by remember { mutableStateOf("") }
@@ -132,9 +149,17 @@ class MainActivity : ComponentActivity() {
      value = email,
      onValueChange = { email = it },
      label = { Text("Email") },
+     singleLine = true,
      modifier = Modifier
       .fillMaxWidth()
-      .clip(RoundedCornerShape(10.dp)),
+      .clip(RoundedCornerShape(10.dp))
+      .focusRequester(focusRequesterEmail),
+     keyboardOptions = KeyboardOptions(
+      imeAction = ImeAction.Next
+     ),
+     keyboardActions = KeyboardActions(
+      onNext = { focusRequesterSenha.requestFocus() }
+     ),
      colors = TextFieldDefaults.colors(
       focusedContainerColor = Color.White,
       unfocusedContainerColor = Color.White,
@@ -154,14 +179,20 @@ class MainActivity : ComponentActivity() {
     // Input de Senha
     TextField(
      visualTransformation = PasswordVisualTransformation(),
-
      value = senha,
      onValueChange = { senha = it },
      label = { Text("Senha") },
-
+     singleLine = true,
      modifier = Modifier
       .fillMaxWidth()
-      .clip(RoundedCornerShape(10.dp)),
+      .clip(RoundedCornerShape(10.dp))
+      .focusRequester(focusRequesterSenha), // <- Aqui estava faltando
+     keyboardOptions = KeyboardOptions(
+      imeAction = ImeAction.Done
+     ),
+     keyboardActions = KeyboardActions(
+      onDone = { focusManager.clearFocus() }
+     ),
      colors = TextFieldDefaults.colors(
       focusedContainerColor = Color.White,
       unfocusedContainerColor = Color.White,
