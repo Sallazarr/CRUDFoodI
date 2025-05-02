@@ -1,4 +1,9 @@
 package com.example.crudfoodi.models
 
-class produto {
-}
+data class Produto(
+    val id: Int,
+    val idRestaurante: Int,
+    val nome: String,
+    val descricao: String,
+    val valor: Double
+)

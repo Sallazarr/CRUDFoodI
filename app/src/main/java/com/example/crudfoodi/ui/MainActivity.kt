@@ -17,9 +17,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalFocusManager
 
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardActions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.platform.LocalFocusManager
@@ -186,7 +186,7 @@ class MainActivity : ComponentActivity() {
      modifier = Modifier
       .fillMaxWidth()
       .clip(RoundedCornerShape(10.dp))
-      .focusRequester(focusRequesterSenha), // <- Aqui estava faltando
+      .focusRequester(focusRequesterSenha),
      keyboardOptions = KeyboardOptions(
       imeAction = ImeAction.Done
      ),

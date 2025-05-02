@@ -45,14 +45,38 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
 
+
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalFocusManager
+
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.runtime.remember
+
+
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     // Tela de Registro
+
+
+    val focusRequesterNome = remember { FocusRequester() }
+    val focusRequesterEmail = remember { FocusRequester() }
+    val focusRequesterSenha = remember { FocusRequester() } // Próximo campo
+    val focusRequesterSobrenome = remember { FocusRequester() }
+    val focusRequesterCelular = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
 
     // Variáveis de estado para os campos
     var nome by remember { mutableStateOf("") }
@@ -100,9 +124,17 @@ fun RegisterScreen(navController: NavHostController) {
                 onValueChange = {nome = it},
                 label = { Text("Nome") },
 
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterNome),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterSobrenome.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -122,9 +154,17 @@ fun RegisterScreen(navController: NavHostController) {
                 onValueChange = {sobrenome = it},
                 label = { Text("Sobrenome") },
 
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterSobrenome),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterEmail.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -144,9 +184,17 @@ fun RegisterScreen(navController: NavHostController) {
                 onValueChange = {email = it},
                 label = { Text("Email") },
 
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterEmail),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterCelular.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -166,9 +214,17 @@ fun RegisterScreen(navController: NavHostController) {
                 onValueChange = {celular = it},
                 label = { Text("Celular") },
 
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterCelular),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterSenha.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -188,9 +244,17 @@ fun RegisterScreen(navController: NavHostController) {
                 onValueChange = {senha = it},
                 label = { Text("Senha") },
 
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterSenha),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,

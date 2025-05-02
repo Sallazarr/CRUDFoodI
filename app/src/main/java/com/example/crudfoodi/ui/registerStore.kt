@@ -44,17 +44,34 @@ import android.widget.Toast
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.example.crudfoodi.moveImage.salvarImagemNoApp
+
+
 
 
 @Composable
 fun RegisterStoreScreen(navController: NavHostController) {
     val context = LocalContext.current
     val dbHelper = DBHelper(context)
+
+
+    val focusRequesterCnpj = remember { FocusRequester() }
+    val focusRequesterNomeLoja = remember { FocusRequester() }
+    val focusRequesterEmail = remember { FocusRequester() }
+    val focusRequesterSenha = remember { FocusRequester() } // Próximo campo
+    val focusRequesterEndereco = remember { FocusRequester() }
+    val focusRequesterCelular = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     var endereco by remember { mutableStateOf("") }
     var celular by remember { mutableStateOf("") }
@@ -114,9 +131,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = cnpj,
                 onValueChange = { cnpj = it },
                 label = { Text("CNPJ") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterCnpj),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterNomeLoja.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -133,9 +158,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = nomeLoja,
                 onValueChange = { nomeLoja = it },
                 label = { Text("Nome da Loja") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterNomeLoja),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterEmail.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -152,9 +185,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterEmail),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterSenha.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -172,9 +213,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 onValueChange = { senha = it },
                 label = { Text("Senha") },
                 visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterSenha),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterEndereco.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -191,9 +240,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = endereco,
                 onValueChange = { endereco = it },
                 label = { Text("Endereço") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterEndereco),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusRequesterCelular.requestFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -210,9 +267,17 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 value = celular,
                 onValueChange = { celular = it },
                 label = { Text("Celular") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .focusRequester(focusRequesterCelular),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,

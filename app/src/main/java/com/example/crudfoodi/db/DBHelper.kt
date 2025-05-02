@@ -3,6 +3,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.crudfoodi.models.Produto
 import com.example.crudfoodi.models.Restaurante
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -150,4 +151,46 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         cursor.close()
         return lista
     }
+}
+
+fun getProdutosByRestauranteId(restauranteId: Int): List<Produto> {
+    val produtos = mutableListOf<Produto>()
+    val db = readableDatabase
+    val cursor = db.rawQuery(
+        "SELECT * FROM produto WHERE id_restaurante = ?",
+        arrayOf(restauranteId.toString())
+    )
+
+    if (cursor.moveToFirst()) {
+        do {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+            val nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"))
+            val descricao = cursor.getString(cursor.getColumnIndexOrThrow("descricao"))
+            val valor = cursor.getDouble(cursor.getColumnIndexOrThrow("valor"))
+            produtos.add(Produto(id, restauranteId, nome, descricao, valor))
+        } while (cursor.moveToNext())
+    }
+
+    cursor.close()
+    return produtos
+}
+
+fun inserirProduto(idRestaurante: Int, nome: String, descricao: String, valor: Double): Boolean {
+    val db = writableDatabase
+    val contentValues = ContentValues().apply {
+        put("id_restaurante", idRestaurante)
+        put("nome", nome)
+        put("descricao", descricao)
+        put("valor", valor)
+    }
+    val result = db.insert("produto", null, contentValues)
+    db.close()
+    return result != -1L
+}
+
+fun removerProduto(idProduto: Int): Boolean {
+    val db = writableDatabase
+    val result = db.delete("produto", "id = ?", arrayOf(idProduto.toString()))
+    db.close()
+    return result > 0
 }
