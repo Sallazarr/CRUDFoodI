@@ -1,4 +1,5 @@
 package com.example.crudfoodi
+import android.content.Context
 import androidx.compose.foundation.clickable
 import com.example.crudfoodi.nav.Navigation
 import androidx.compose.ui.Alignment
@@ -90,6 +91,17 @@ class MainActivity : ComponentActivity() {
 
   }
  }
+}
+
+fun salvarIdEmSharedPreferences(context: Context, id: Int, tipo: String) {
+ val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+ val editor = sharedPrefs.edit()
+ if (tipo == "cliente") {
+  editor.putInt("id_cliente", id)
+ } else if (tipo == "restaurante") {
+  editor.putInt("id_restaurante", id)
+ }
+ editor.apply()
 }
 
  @Composable
@@ -220,11 +232,24 @@ class MainActivity : ComponentActivity() {
        }
 
        clienteExiste -> {
-        navController.navigate("home_cliente")
+        val clienteId = dbHelper.buscarIdClientePorEmail(email)
+        if (clienteId != -1) {
+         salvarIdEmSharedPreferences(context, clienteId, "cliente")
+         navController.navigate("home_cliente")
+        } else {
+         Toast.makeText(context, "Cliente não encontrado", Toast.LENGTH_SHORT).show()
+        }
        }
 
        restauranteExiste -> {
-        navController.navigate("home_restaurante")
+        // Verificar se o restaurante existe antes de tentar buscar o ID
+        val restauranteId = dbHelper.buscarIdRestaurantePorEmail(email)
+        if (restauranteId != -1) { // Verifica se o ID é válido
+         salvarIdEmSharedPreferences(context, restauranteId, "restaurante")
+         navController.navigate("home_restaurante")
+        } else {
+         Toast.makeText(context, "Restaurante não encontrado", Toast.LENGTH_SHORT).show()
+        }
        }
 
        else -> {
