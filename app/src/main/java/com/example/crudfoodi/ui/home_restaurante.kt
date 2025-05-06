@@ -137,47 +137,30 @@ fun HomeRestaurante(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(top = 8.dp, start = 8.dp)
             ) {
-                // Ícone de usuário no canto superior esquerdo
-                IconButton(
-                    onClick = {
-                        // Ação para ir para a tela de perfil ou outro destino
-                    },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Ícone de usuário",
-                        tint = Color.Black
-                    )
-                }
-
-                // Logo do app no centro
                 Image(
                     painter = painterResource(id = R.drawable.logobgless),
                     contentDescription = "Logo FoodI",
                     modifier = Modifier
-                        .height(80.dp)
-                        .align(Alignment.Center)
+                        .height(60.dp)
+                        .align(Alignment.TopStart)
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp)) // Pequeno espaçamento após a logo
 
-            // Foto de perfil do restaurante
+// Imagem do restaurante (subida visualmente na tela)
             restaurante?.getImagemUri()?.let { uri ->
                 AsyncImage(
                     model = uri,
                     contentDescription = "Imagem do restaurante",
                     modifier = Modifier
-                        .size(90.dp) // Define o tamanho do ícone
-                        .clip(RoundedCornerShape(50)) // Torna a imagem circular
-                        .border(2.dp, Color.Gray, RoundedCornerShape(50)) // Adiciona uma borda ao redor da imagem
-                        .align(Alignment.CenterHorizontally), // Alinha a imagem ao centro
-                    contentScale = ContentScale.Crop // Faz com que a imagem preencha o espaço circular, cortando se necessário
+                        .size(110.dp) // imagem um pouco maior
+                        .clip(RoundedCornerShape(55)) // borda circular proporcional
+                        .border(2.dp, Color.Gray, RoundedCornerShape(55))
+                        .align(Alignment.CenterHorizontally),
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -203,10 +186,31 @@ fun HomeRestaurante(navController: NavHostController) {
                     // Ação para editar as informações do restaurante
                 },
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                        .padding(top = 12.dp)
                     .align(Alignment.CenterHorizontally)
+                    .height(50.dp), // Altura do botão
+                shape = RoundedCornerShape(14.dp), // Borda arredondada
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF007bff) // Cor do botão
+                )
             ) {
-                Text(text = "Editar Restaurante")
+                Text(text = "Editar Restaurante",color = Color.White)
+            }
+            Button(
+                onClick = {
+                    // TODO: Navegar para tela de cadastro de produto
+                    navController.navigate("addProduto")
+                },
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .height(50.dp), // Altura do botão
+                shape = RoundedCornerShape(14.dp), // Borda arredondada
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF007bff) // Cor do botão
+                )
+            ) {
+                Text(text = "Adicionar Produto",color = Color.White)
             }
         }
     }

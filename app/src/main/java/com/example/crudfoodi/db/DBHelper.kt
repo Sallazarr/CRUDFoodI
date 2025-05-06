@@ -110,6 +110,22 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return result != -1L
     }
 
+    fun adicionarProduto(produto: Produto): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("id_restaurante", produto.idRestaurante)
+            put("nome", produto.nome)
+            put("descricao", produto.descricao)
+            put("imagem", produto.imagem)
+            put("valor", produto.valor.toDouble())
+        }
+
+        val result = db.insert("produto", null, values)
+        db.close()
+        return result != -1L
+    }
+
+
     fun verificarTiposDeConta(email: String): Pair<Boolean, Boolean> {
         val db = this.readableDatabase
 

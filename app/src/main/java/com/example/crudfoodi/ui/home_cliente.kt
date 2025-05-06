@@ -64,6 +64,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -110,6 +112,9 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
             .padding(16.dp)
     ) {
         Column {
+
+
+
             Image(
                 painter = painterResource(id = R.drawable.logobgless),
                 contentDescription = "Logo FoodI",
@@ -119,6 +124,13 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Ícone de usuário",
+                tint = Color.Black
+            )
+
 
             Text(
                 text = "Sugestões para você",
@@ -172,8 +184,8 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
                 }
             }
         }
-    }
-}
+    }}
+
 
 
 @Composable
