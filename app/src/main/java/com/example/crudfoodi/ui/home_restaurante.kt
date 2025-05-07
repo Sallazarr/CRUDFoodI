@@ -65,6 +65,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
@@ -102,16 +104,23 @@ fun HomeRestaurante(navController: NavHostController) {
     }
 
     var restaurante by remember { mutableStateOf<Restaurante?>(null) }
+    var produtos by remember { mutableStateOf<List<Produto>>(emptyList()) }
 
     // Carregando o restaurante do banco
     LaunchedEffect(idRestaurante) {
         val restauranteCarregado = dbHelper.buscarRestaurantePorId(idRestaurante)
+
         restaurante = restauranteCarregado
         if (restauranteCarregado != null) {
             Log.d("HomeRestaurante", "Restaurante carregado: ${restauranteCarregado.nome}")
         } else {
             Log.e("HomeRestaurante", "Nenhum restaurante encontrado para o ID: $idRestaurante")
         }
+        val produtosCarregados = dbHelper.buscarProdutosPorRestaurante(idRestaurante)
+
+
+        produtos = produtosCarregados
+        Log.d("HomeRestaurante", "Produtos carregados: ${produtos.size}")
     }
 
     Box(
@@ -129,10 +138,14 @@ fun HomeRestaurante(navController: NavHostController) {
             .padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            // Conteúdo fixo acima (logo, imagem, botões)
+            // ...
             // Barra superior com ícone de usuário e logo
             Box(
                 modifier = Modifier
@@ -170,7 +183,8 @@ fun HomeRestaurante(navController: NavHostController) {
                     text = it.nome,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = Color(0xFF007bff)
                     ),
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -180,38 +194,86 @@ fun HomeRestaurante(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Ação para editar informações do restaurante (exemplo)
+            Text(text = "Editar Restaurante", color = Color.White)
+
+            // Botão Adicionar Produto (agora clicável!)
             Button(
                 onClick = {
-                    // Ação para editar as informações do restaurante
-                },
-                modifier = Modifier
-                        .padding(top = 12.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .height(50.dp), // Altura do botão
-                shape = RoundedCornerShape(14.dp), // Borda arredondada
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF007bff) // Cor do botão
-                )
-            ) {
-                Text(text = "Editar Restaurante",color = Color.White)
-            }
-            Button(
-                onClick = {
-                    // TODO: Navegar para tela de cadastro de produto
                     navController.navigate("addProduto")
                 },
                 modifier = Modifier
                     .padding(top = 12.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .height(50.dp), // Altura do botão
-                shape = RoundedCornerShape(14.dp), // Borda arredondada
+                    .height(50.dp),
+                shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF007bff) // Cor do botão
+                    containerColor = Color(0xFF007bff)
                 )
             ) {
-                Text(text = "Adicionar Produto",color = Color.White)
+                Text(text = "Adicionar Produto", color = Color.White)
+            }
+
+            // Título dos produtos
+            Text(
+                text = "Seus Produtos",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp, bottom = 8.dp),
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
+            )
+
+            // Lista de produtos
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                items(produtos) { produto ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Imagem do produto
+                            produto.getImagemUri()?.let { uri ->
+                                AsyncImage(
+                                    model = uri,
+                                    contentDescription = "Imagem do produto",
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                            }
+
+                            // Informações do produto
+                            Column {
+                                Text(produto.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(produto.descricao, fontSize = 14.sp, color = Color.Gray)
+                                Text(
+                                    "R$ %.2f".format(produto.valor),
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF007bff)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-}
+    }

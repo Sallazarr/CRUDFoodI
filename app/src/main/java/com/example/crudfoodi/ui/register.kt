@@ -139,9 +139,9 @@ fun RegisterScreen(navController: NavHostController) {
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color(0xFF007bff),
-                    unfocusedIndicatorColor = Color.LightGray,
-                    focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color.Gray,
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color.DarkGray,
+                    unfocusedLabelColor = Color.DarkGray,
                     cursorColor = Color(0xFF007bff)
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))

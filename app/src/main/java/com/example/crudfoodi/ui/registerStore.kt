@@ -127,7 +127,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(30.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = cnpj,
                 onValueChange = { cnpj = it },
                 label = { Text("CNPJ") },
@@ -154,7 +154,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            OutlinedTextField(
+           TextField(
                 value = nomeLoja,
                 onValueChange = { nomeLoja = it },
                 label = { Text("Nome da Loja") },
@@ -181,7 +181,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            OutlinedTextField(
+            TextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
@@ -208,7 +208,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            OutlinedTextField(
+            TextField(
                 value = senha,
                 onValueChange = { senha = it },
                 label = { Text("Senha") },
@@ -236,7 +236,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            OutlinedTextField(
+           TextField(
                 value = endereco,
                 onValueChange = { endereco = it },
                 label = { Text("Endereço") },
@@ -263,7 +263,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
-            OutlinedTextField(
+           TextField(
                 value = celular,
                 onValueChange = { celular = it },
                 label = { Text("Celular") },
@@ -276,7 +276,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
+                    onDone = { focusManager.clearFocus(force = true) }
                 ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,

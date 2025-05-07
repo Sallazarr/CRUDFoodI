@@ -213,32 +213,31 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return lista
     }
 
-    fun listarProdutos(): List<Produto> {
-        val lista = mutableListOf<Produto>()
-        val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM restaurante", null)
+    fun buscarProdutosPorRestaurante(idRestaurante: Int): List<Produto> {
+        val produtos = mutableListOf<Produto>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM produto WHERE id_restaurante = ?",
+            arrayOf(idRestaurante.toString())
+        )
 
         if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
-                val idRestaurante = cursor.getInt(cursor.getColumnIndexOrThrow("idRestaurante"))
-                val nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"))
-
-                val imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem"))
-
-                // e depois adiciona normalmente na lista:
-
-                val valor = cursor.getString(cursor.getColumnIndexOrThrow("valor"))
-                val descricao = cursor.getString(cursor.getColumnIndexOrThrow("descricao"))
-
-                lista.add(Produto(id, idRestaurante, nome, imagem, valor, descricao))
+                val produto = Produto(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                    idRestaurante = cursor.getInt(cursor.getColumnIndexOrThrow("id_restaurante")),
+                    nome = cursor.getString(cursor.getColumnIndexOrThrow("nome")),
+                    descricao = cursor.getString(cursor.getColumnIndexOrThrow("descricao")),
+                    valor = cursor.getDouble(cursor.getColumnIndexOrThrow("valor")),
+                    imagem = cursor.getString(cursor.getColumnIndexOrThrow("imagem")) // <-- Aqui
+                )
+                produtos.add(produto)
             } while (cursor.moveToNext())
         }
 
         cursor.close()
-        return lista
+        return produtos
     }
-
 }
 
 
