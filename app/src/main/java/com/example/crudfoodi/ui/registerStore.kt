@@ -154,6 +154,8 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
            TextField(
                 value = nomeLoja,
                 onValueChange = { nomeLoja = it },
@@ -180,6 +182,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
                 value = email,
@@ -207,6 +210,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
             TextField(
                 value = senha,
@@ -235,6 +239,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
            TextField(
                 value = endereco,
@@ -262,6 +267,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 ),
                 textStyle = TextStyle(color = Color(0xFF007bff))
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
            TextField(
                 value = celular,

@@ -176,9 +176,11 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
             LazyColumn {
                 items(listaRestaurantes) { restaurante ->
                     RestaurantCard(
+                        id = restaurante.id,
                         nome = restaurante.nome,
                         imagemPath = restaurante.imagem,
-                        endereco = restaurante.endereco
+                        endereco = restaurante.endereco,
+                        navController = navController // <- Passe o navController
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -231,9 +233,11 @@ fun CategoriaCard(titulo: String, imagemResId: Int, modifier: Modifier = Modifie
 
 @Composable
 fun RestaurantCard(
+    id: Int,
     nome: String,
     imagemPath: String,
-    endereco: String
+    endereco: String,
+    navController: NavHostController // <- Adicione isso
 ) {
     val context = LocalContext.current
     val file = File(imagemPath)
@@ -243,6 +247,10 @@ fun RestaurantCard(
             .fillMaxWidth()
             .height(120.dp)
             .padding(8.dp)
+            .clickable {
+                navController.navigate("storeProducts")
+            }
+
         .border(2.dp, Color.DarkGray, shape = RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

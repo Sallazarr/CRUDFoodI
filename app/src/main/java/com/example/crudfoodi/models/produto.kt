@@ -10,7 +10,12 @@ data class Produto(
     val descricao: String,
     val valor: Double
 ) {
+    // Função para garantir a URI válida
     fun getImagemUri(): Uri? {
-        return imagem?.let { Uri.parse(it) }
+        return try {
+            Uri.parse(imagem).normalizeScheme()
+        } catch (e: Exception) {
+            null
+        }
     }
 }

@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.height
 
@@ -211,6 +212,7 @@ fun HomeRestaurante(navController: NavHostController) {
             ) {
                 Text(text = "Adicionar Produto", color = Color.White)
             }
+
 
             // Título dos produtos
             Text(

@@ -68,6 +68,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 
 
+import androidx.compose.foundation.layout.Spacer
+
+import java.io.File
+
+
 @Composable
 fun AddProdutoScreen(navController: NavHostController) {
     var nome by remember { mutableStateOf("") }
@@ -234,7 +239,7 @@ fun AddProdutoScreen(navController: NavHostController) {
             )   {
                 Text("Selecionar Imagem")
             }
-
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Exibir a imagem selecionada (se houver)
             imagemUri?.let {
@@ -266,6 +271,7 @@ fun AddProdutoScreen(navController: NavHostController) {
                     val sucesso = dbHelper.adicionarProduto(produto)
                     if (sucesso) {
                         Toast.makeText(context, "Produto adicionado com sucesso!", Toast.LENGTH_SHORT).show()
+                        Log.d("ImgProduto", "Imagem do Produto de Id ${produto.id} Diretório: ${produto.imagem}")
                         navController.popBackStack()
                     } else {
                         Toast.makeText(context, "Erro ao adicionar produto!", Toast.LENGTH_SHORT).show()

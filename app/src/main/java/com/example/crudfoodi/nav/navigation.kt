@@ -11,6 +11,7 @@ import com.example.crudfoodi.HomeCliente
 import androidx.compose.runtime.Composable
 import com.example.crudfoodi.HomeRestaurante
 import com.example.crudfoodi.ui.AddProdutoScreen
+import com.example.crudfoodi.StoreProducts
 
 
 @Composable
@@ -25,5 +26,6 @@ fun Navigation(requestPermissionLauncher: ActivityResultLauncher<String>) {
         composable("home_cliente"){HomeCliente(navController, requestPermissionLauncher)}
         composable("home_restaurante"){ HomeRestaurante(navController) }
         composable("addProduto"){ AddProdutoScreen(navController) }
+        composable("storeProducts"){ StoreProducts(navController) }
     }
 }
