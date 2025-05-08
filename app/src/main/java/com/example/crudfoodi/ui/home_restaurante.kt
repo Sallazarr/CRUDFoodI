@@ -166,18 +166,31 @@ fun HomeRestaurante(navController: NavHostController) {
 
 // Imagem do restaurante (subida visualmente na tela)
             restaurante?.getImagemUri()?.let { uri ->
-                AsyncImage(
-                    model = uri,
-                    contentDescription = "Imagem do restaurante",
-                    modifier = Modifier
-                        .size(110.dp) // imagem um pouco maior
-                        .clip(RoundedCornerShape(55)) // borda circular proporcional
-                        .border(2.dp, Color.Gray, RoundedCornerShape(55))
-                        .align(Alignment.CenterHorizontally),
-                    contentScale = ContentScale.Crop
-                )
-            }
+                if (restaurante?.imagem == "logobgless") {
+                    Image(
+                        painter = painterResource(id = R.drawable.logobgless),
+                        contentDescription = "Logo padrão",
+                        modifier = Modifier
+                            .size(110.dp) // imagem um pouco maior
+                            .clip(RoundedCornerShape(55)) // borda circular proporcional
+                            .border(2.dp, Color.Gray, RoundedCornerShape(55))
+                            .align(Alignment.CenterHorizontally),
+                        contentScale = ContentScale.Crop
 
+                    )
+                } else {
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = "Imagem do restaurante",
+                        modifier = Modifier
+                            .size(110.dp) // imagem um pouco maior
+                            .clip(RoundedCornerShape(55)) // borda circular proporcional
+                            .border(2.dp, Color.Gray, RoundedCornerShape(55))
+                            .align(Alignment.CenterHorizontally),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
             // Exibição do nome do restaurante
             restaurante?.let {
                 Text(
@@ -250,16 +263,32 @@ fun HomeRestaurante(navController: NavHostController) {
                         ) {
                             // Imagem do produto
                             produto.getImagemUri()?.let { uri ->
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = "Imagem do produto",
-                                    modifier = Modifier
-                                        .size(64.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
+                                if(produto.imagem == "burguer"){
+                                    Image(
+                                        painter = painterResource(id = R.drawable.burguer),
+                                        contentDescription = "Logo padrão",
+                                                modifier = Modifier
+                                                .size(64.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+
+                                    )
+                                } else {
+                                    produto.getImagemUri()?.let { uri ->
+                                        AsyncImage(
+                                            model = uri,
+                                            contentDescription = "Imagem do produto",
+                                            modifier = Modifier
+                                                .size(64.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                            contentScale = ContentScale.Crop
+
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                }
                             }
 
                             // Informações do produto

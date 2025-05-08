@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,22 +37,29 @@ fun StoreProducts(navController: NavHostController) {
     // Pegando o ID do restaurante logado salvo no SharedPreferences
     val idRestaurante = remember {
         val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val id = sharedPrefs.getInt("id_restaurante", -1)
-
-        Log.d("storeP", "ID do restaurante recuperado: ${id} Diretório de imagem: ${produto.imagem}" )
+        val id = sharedPrefs.getInt("restaurante_selecionado_id", -1)
+        id
         id
     }
 
     var restaurante by remember { mutableStateOf<Restaurante?>(null) }
     var produtos by remember { mutableStateOf<List<Produto>>(emptyList()) }
 
+    // Carregando o restaurante do banco
     LaunchedEffect(idRestaurante) {
-        restaurante = dbHelper.buscarRestaurantePorId(idRestaurante)
-        produtos = dbHelper.buscarProdutosPorRestaurante(idRestaurante)
-        Log.d(
-            "StoreProducts",
-            "Carregados ${produtos.size} produtos do restaurante ID $idRestaurante"
-        )
+        val restauranteCarregado = dbHelper.buscarRestaurantePorId(idRestaurante)
+
+        restaurante = restauranteCarregado
+        if (restauranteCarregado != null) {
+            Log.d("HomeRestaurante", "Restaurante carregado: ${restauranteCarregado.nome}")
+        } else {
+            Log.e("HomeRestaurante", "Nenhum restaurante encontrado para o ID: $idRestaurante")
+        }
+        val produtosCarregados = dbHelper.buscarProdutosPorRestaurante(idRestaurante)
+
+
+        produtos = produtosCarregados
+        Log.d("HomeRestaurante", "Produtos carregados: ${produtos.size}")
     }
 
     Box(
@@ -100,23 +108,69 @@ fun StoreProducts(navController: NavHostController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             produto.getImagemUri()?.let { uri ->
-                                AsyncImage(
-                                    model = produto.getImagemUri(),
-                                    contentDescription = "Imagem do produto",
-                                    modifier = Modifier
-                                        .size(64.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
+                                if (produto.imagem == "burguer") {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.burguer),
+                                        contentDescription = "Logo padrão",
+                                        modifier = Modifier
+                                            .size(64.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+
+                                    )
+                                } else {
+                                    produto.getImagemUri()?.let { uri ->
+                                        AsyncImage(
+                                            model = uri,
+                                            contentDescription = "Imagem do produto",
+                                            modifier = Modifier
+                                                .size(64.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                            contentScale = ContentScale.Crop
+
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ){
+                                    Text(
+                                        produto.nome,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.DarkGray
+                                    )
+                                    Text(
+                                        produto.descricao,
+                                        fontSize = 14.sp,
+                                        color = Color.Gray
+                                    )
+                                    Text(
+                                        "R$ %.2f".format(produto.valor),
+                                        color = Color(0xFF007bff)
+                                    )
+                                }
                             }
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Column {
-                                Text(produto.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                Text(produto.descricao, fontSize = 14.sp, color = Color.Gray)
-                                Text("R$ %.2f".format(produto.valor), color = Color(0xFF007bff))
+                            Button(
+                                onClick = {
+                                    Log.d("Carrinho", "Produto adicionado: ${produto.nome}")
+                                },
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007bff)),
+                                contentPadding = PaddingValues(0.dp),
+                                modifier = Modifier
+                                    .size(40.dp) // Tamanho total do botão
+                            ) {
+                                Text(
+                                    text = "+",
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
                             }
                         }
                     }

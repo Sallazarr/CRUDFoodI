@@ -69,6 +69,7 @@ import androidx.compose.ui.text.input.ImeAction
 
 
 import androidx.compose.foundation.layout.Spacer
+import com.example.crudfoodi.moveImage.salvarImagemProdutoNoApp
 
 import java.io.File
 
@@ -260,10 +261,15 @@ fun AddProdutoScreen(navController: NavHostController) {
             // Botão para salvar o produto
             Button(
                 onClick = {
+                    // Salva a imagem do produto e obtém o caminho
+                    val imagemSalva = imagemUri?.let { uri ->
+                        salvarImagemProdutoNoApp(context, uri)  // Passando "produto" como tipo
+                    } ?: ""
+
                     val produto = Produto(
                         id = 0, // ID será gerado automaticamente
                         idRestaurante = idRestaurante,
-                        imagem = imagemUri.toString(),
+                        imagem = imagemSalva,
                         nome = nome,
                         descricao = descricao,
                         valor = valor.toDouble()

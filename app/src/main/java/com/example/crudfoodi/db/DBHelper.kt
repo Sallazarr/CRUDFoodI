@@ -3,13 +3,14 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.example.crudfoodi.models.Produto
 import com.example.crudfoodi.models.Restaurante
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         const val DATABASE_NAME = "foodI.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -71,7 +72,24 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.execSQL(createRestauranteTable)
         db.execSQL(createProdutoTable)
         db.execSQL(createPedidoTable)
+
+        // Inserindo dados iniciais
+        db.execSQL("""
+        INSERT INTO cliente (nome, sobrenome, celular, email, senha) VALUES 
+        ('Henrique', 'Salazar da Silva', '11999999999', 'a', 'a')
+    """)
+
+        db.execSQL("""
+        INSERT INTO restaurante (nome, celular, endereco, imagem, email, senha, cnpj) VALUES 
+        ('FoodI Restaurante Teste', '11988887777', 'Av. Central, 123', 'logobgless', 'b', 'b', '12345678000199')
+    """)
+
+        db.execSQL("""
+        INSERT INTO produto (id_restaurante, nome, descricao, imagem, valor) VALUES 
+        (1, 'Hambúrguer', 'Hambúrguer com carne grelhada no fogo', 'burguer', 25.90)
+    """)
     }
+
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS pedido")
@@ -189,6 +207,8 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         val lista = mutableListOf<Restaurante>()
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM restaurante", null)
+
+        Log.d("DBHelper", "Restaurantes encontrados: ${cursor.count}")
 
         if (cursor.moveToFirst()) {
             do {

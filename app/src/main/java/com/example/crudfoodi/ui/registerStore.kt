@@ -54,9 +54,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import com.example.crudfoodi.moveImage.salvarImagemNoApp
-
-
+import com.example.crudfoodi.moveImage.salvarImagemRestauranteNoApp
 
 
 @Composable
@@ -318,7 +316,7 @@ fun RegisterStoreScreen(navController: NavHostController) {
                 onClick = {
                     // Salva a imagem no diretório interno do app e obtém o caminho
                     val imagemSalva = imageUri.value?.let { uri ->
-                        salvarImagemNoApp(context, uri)  // Chama a função para salvar a imagem
+                        salvarImagemRestauranteNoApp(context, uri)  // Chama a função para salvar a imagem
                     } ?: ""  // Caso não haja imagem, coloca uma string vazia
 
                     // Chama o insertRestaurante com o caminho da imagem interna

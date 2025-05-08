@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 
@@ -81,7 +82,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextAlign
 import coil.request.ImageRequest
 import java.io.File
-
+import androidx.core.content.edit
 
 
 @Composable
@@ -90,6 +91,7 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
     val context = LocalContext.current
     val dbHelper = DBHelper(context)
     val listaRestaurantes = remember { mutableStateListOf<Restaurante>() }
+
 
     LaunchedEffect(Unit) {
         val restaurantes = dbHelper.listarRestaurantes()
@@ -248,10 +250,13 @@ fun RestaurantCard(
             .height(120.dp)
             .padding(8.dp)
             .clickable {
+                val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                sharedPrefs.edit { putInt("restaurante_selecionado_id", id) }
+
                 navController.navigate("storeProducts")
             }
 
-        .border(2.dp, Color.DarkGray, shape = RoundedCornerShape(16.dp)),
+            .border(2.dp, Color.DarkGray, shape = RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp)
@@ -262,23 +267,31 @@ fun RestaurantCard(
                 .padding(12.dp)
                 .fillMaxSize()
         ) {
-            if (file.exists()) {
+            if (imagemPath == "logobgless") {
+                Image(
+                    painter = painterResource(id = R.drawable.logobgless),
+                    contentDescription = "Logo padrão",
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(file) // ← caminho do arquivo salvo internamente
+                        .data(File(imagemPath))
                         .crossfade(true)
                         .build(),
-                    contentDescription = nome,
+                    contentDescription = "Imagem do restaurante",
                     modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(12.dp)),
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
-                    error = painterResource(id = R.drawable.error),
-                    placeholder = painterResource(id = R.drawable.loading)
+                    error = painterResource(id = R.drawable.error), // fallback visual direto
                 )
                 Log.d("IMAGE_LOADING", "Imagem carregada de: ${file.absolutePath}")
-            } else {
-                ImageFallback()
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -301,21 +314,23 @@ fun RestaurantCard(
             }
         }
     }
-}
 
 
-@Composable
-private fun ImageFallback() {
-    Box(
-        modifier = Modifier
-            .size(80.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.error),
-            contentDescription = "Imagem não disponível",
-            modifier = Modifier.size(40.dp))
+
+    @Composable
+ fun ImageFallback() {
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.error),
+                contentDescription = "Imagem não disponível",
+                modifier = Modifier.size(40.dp)
+            )
+        }
     }
 }
