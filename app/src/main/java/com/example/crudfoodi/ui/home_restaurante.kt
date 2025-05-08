@@ -269,7 +269,7 @@ fun HomeRestaurante(navController: NavHostController) {
                                         contentDescription = "Logo padrão",
                                                 modifier = Modifier
                                                 .size(64.dp)
-                                            .clip(RoundedCornerShape(8.dp))
+                                            .clip(RoundedCornerShape(12.dp))
                                             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
                                         contentScale = ContentScale.Crop
 
@@ -280,8 +280,9 @@ fun HomeRestaurante(navController: NavHostController) {
                                             model = uri,
                                             contentDescription = "Imagem do produto",
                                             modifier = Modifier
+
                                                 .size(64.dp)
-                                                .clip(RoundedCornerShape(8.dp))
+                                                .clip(RoundedCornerShape(12.dp))
                                                 .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
                                             contentScale = ContentScale.Crop
 
