@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.crudfoodi.models.Produto
 import com.example.crudfoodi.models.Restaurante
+import com.example.crudfoodi.models.Pedido
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -74,20 +75,26 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.execSQL(createPedidoTable)
 
         // Inserindo dados iniciais
-        db.execSQL("""
+        db.execSQL(
+            """
         INSERT INTO cliente (nome, sobrenome, celular, email, senha) VALUES 
         ('Henrique', 'Salazar da Silva', '11999999999', 'a', 'a')
-    """)
+    """
+        )
 
-        db.execSQL("""
+        db.execSQL(
+            """
         INSERT INTO restaurante (nome, celular, endereco, imagem, email, senha, cnpj) VALUES 
         ('FoodI Restaurante Teste', '11988887777', 'Av. Central, 123', 'logobgless', 'b', 'b', '12345678000199')
-    """)
+    """
+        )
 
-        db.execSQL("""
+        db.execSQL(
+            """
         INSERT INTO produto (id_restaurante, nome, descricao, imagem, valor) VALUES 
         (1, 'Hambúrguer', 'Hambúrguer com carne grelhada no fogo', 'burguer', 25.90)
-    """)
+    """
+        )
     }
 
 
@@ -98,7 +105,14 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.execSQL("DROP TABLE IF EXISTS cliente")
         onCreate(db)
     }
-    fun inserirCliente(nome: String, sobrenome: String, celular: String, email: String, senha: String): Boolean {
+
+    fun inserirCliente(
+        nome: String,
+        sobrenome: String,
+        celular: String,
+        email: String,
+        senha: String
+    ): Boolean {
         val db = this.writableDatabase
         val contentValues = android.content.ContentValues()
         contentValues.put("nome", nome)
@@ -112,7 +126,16 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return resultado != -1L
 
     }
-    fun insertRestaurante(nome: String, celular: String, endereco: String, imagem: String, email: String, senha: String, cnpj: String): Boolean {
+
+    fun insertRestaurante(
+        nome: String,
+        celular: String,
+        endereco: String,
+        imagem: String,
+        email: String,
+        senha: String,
+        cnpj: String
+    ): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put("nome", nome)
@@ -151,7 +174,8 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         val clienteExiste = cursorCliente.moveToFirst()
         cursorCliente.close()
 
-        val cursorRestaurante = db.rawQuery("SELECT * FROM restaurante WHERE email = ?", arrayOf(email))
+        val cursorRestaurante =
+            db.rawQuery("SELECT * FROM restaurante WHERE email = ?", arrayOf(email))
         val restauranteExiste = cursorRestaurante.moveToFirst()
         cursorRestaurante.close()
 
@@ -258,7 +282,96 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         cursor.close()
         return produtos
     }
+    fun criarPedidoComProdutos(
+        nomeCliente: String,
+        idCliente: Int,
+        idRestaurante: Int,
+        produtos: List<Produto>
+    ): Long {
+        val db = writableDatabase
+
+        // Inicia uma transação para garantir que todos os dados sejam inseridos corretamente
+        db.beginTransaction()
+
+        try {
+            // Cria o pedido na tabela de pedidos
+            val contentValues = ContentValues().apply {
+                put("nome", nomeCliente)
+                put("id_cliente", idCliente)
+                put("id_restaurante", idRestaurante)
+                put("valor", produtos.sumOf { it.valor })
+            }
+
+            // Insere o pedido e obtém o ID do pedido inserido
+            val idPedido = db.insert("pedido", null, contentValues)
+
+            // Verifica se o pedido foi inserido com sucesso
+            if (idPedido != -1L) {
+                // Agora, inserimos os produtos associados ao pedido
+                for (produto in produtos) {
+                    val contentValuesProduto = ContentValues().apply {
+                        put("id_pedido", idPedido)  // Associa o produto ao pedido
+                        put("id_produto", produto.id)
+                        put("valor", produto.valor)
+                    }
+                    // Insere o produto na tabela de pedido_produto (tabela intermediária)
+                    db.insert("pedido_produto", null, contentValuesProduto)
+                }
+
+                // Marca a transação como bem-sucedida
+                db.setTransactionSuccessful()
+            }
+
+            return idPedido
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return -1L  // Se algo deu errado, retorna um ID inválido
+        } finally {
+            // Fim da transação
+            db.endTransaction()
+        }
+    }
+    fun buscarProdutosDoPedido(idPedido: Long): List<Produto> {
+        val db = readableDatabase
+        val produtos = mutableListOf<Produto>()
+        val cursor = db.rawQuery(
+            "SELECT * FROM produtos WHERE id IN (SELECT id_produto FROM pedido_produto WHERE id_pedido = ?)",
+            arrayOf(idPedido.toString())
+        )
+
+        if (cursor.moveToFirst()) {
+            do {
+                // Verifica se a coluna existe antes de acessar
+                val idColumnIndex = cursor.getColumnIndex("id")
+                val nomeColumnIndex = cursor.getColumnIndex("nome")
+                val valorColumnIndex = cursor.getColumnIndex("valor")
+                val descricaoColumnIndex = cursor.getColumnIndex("descricao")
+                val idRestauranteColumnIndex = cursor.getColumnIndex("id_restaurante")
+                val imagemColumnIndex = cursor.getColumnIndex("imagem")
+
+                // Verifica se todas as colunas existem
+                if (idColumnIndex >= 0 && nomeColumnIndex >= 0 && valorColumnIndex >= 0) {
+                    val produto = Produto(
+                        id = cursor.getInt(idColumnIndex),
+                        nome = cursor.getString(nomeColumnIndex),
+                        valor = cursor.getDouble(valorColumnIndex), // Converter para Float
+                        descricao = if (descricaoColumnIndex >= 0) cursor.getString(descricaoColumnIndex) else "",
+                        idRestaurante = if (idRestauranteColumnIndex >= 0) cursor.getInt(idRestauranteColumnIndex) else 0,
+                        imagem = if (imagemColumnIndex >= 0) cursor.getString(imagemColumnIndex) else ""
+                    )
+                    produtos.add(produto)
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return produtos
+    }
+    fun limparCarrinho(idCliente: Int) {
+        // Supondo que o banco de dados esteja acessível sem contexto
+        val db = writableDatabase // Aqui, o banco de dados é acessado diretamente
+        db.execSQL("DELETE FROM carrinho WHERE id_cliente = ?", arrayOf(idCliente.toString()))
+        db.close()
+    }
+
 }
-
-
 

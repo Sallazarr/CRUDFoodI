@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import com.example.crudfoodi.HomeRestaurante
 import com.example.crudfoodi.ui.AddProdutoScreen
 import com.example.crudfoodi.StoreProducts
+import com.example.crudfoodi.CheckoutScreen
+import com.example.crudfoodi.ConfirmacaoScreen
+
 
 
 @Composable
@@ -27,5 +30,7 @@ fun Navigation(requestPermissionLauncher: ActivityResultLauncher<String>) {
         composable("home_restaurante"){ HomeRestaurante(navController) }
         composable("addProduto"){ AddProdutoScreen(navController) }
         composable("storeProducts"){ StoreProducts(navController) }
+        composable("checkout"){ CheckoutScreen(navController) }
+        composable("confirmation"){ ConfirmacaoScreen(navController) }
     }
 }

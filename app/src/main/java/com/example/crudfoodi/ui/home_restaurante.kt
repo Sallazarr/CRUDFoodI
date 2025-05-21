@@ -145,9 +145,6 @@ fun HomeRestaurante(navController: NavHostController) {
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Conteúdo fixo acima (logo, imagem, botões)
-            // ...
-            // Barra superior com ícone de usuário e logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

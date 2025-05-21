@@ -127,12 +127,6 @@ fun HomeCliente(navController: NavHostController, requestPermissionLauncher: Act
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Ícone de usuário",
-                tint = Color.Black
-            )
-
 
             Text(
                 text = "Sugestões para você",
